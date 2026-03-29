@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تۆمارکردنی خەرجی</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #1a1a24;
+    --card: #22222f;
+    --border: #2e2e42;
+    --accent: #c8a96e;
+    --accent2: #e8c98e;
+    --text: #f0ece4;
+    --muted: #7a7a95;
+    --danger: #e06060;
+    --success: #5db88a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Naskh Arabic', serif;
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(200,169,110,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(93,184,138,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    text-align: center;
+    padding: 32px 0 28px;
+  }
+
+  .logo-icon {
+    font-size: 2.4rem;
+    display: block;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 12px rgba(200,169,110,0.4));
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+
+  header p {
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .total-card {
+    background: linear-gradient(135deg, #1e1e2a 0%, #25253a 100%);
+    border: 1px solid var(--accent);
+    border-radius: 18px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 30px rgba(200,169,110,0.1), inset 0 1px 0 rgba(200,169,110,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .total-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; left: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(200,169,110,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .total-label { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
+  .total-amount { font-size: 2.8rem; font-weight: 700; color: var(--accent2); line-height: 1; text-shadow: 0 0 20px rgba(200,169,110,0.3); transition: all 0.4s ease; }
+  .total-amount span { font-size: 1rem; color: var(--muted); margin-right: 6px; }
+  .total-count { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+
+  .input-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+  .input-card h2 { font-size: 1rem; color: var(--accent); margin-bottom: 16px; font-weight: 600; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+  .field input, .field textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Noto Naskh Arabic', serif; font-size: 1rem; direction: rtl; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,169,110,0.1); }
+  .field input[type="number"] { font-size: 1.2rem; font-weight: 600; }
+  .field textarea { resize: none; height: 70px; font-size: 0.92rem; }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); opacity: 0.6; }
+
+  .btn-add { width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); border: none; border-radius: 12px; padding: 14px; color: #1a1408; font-family: 'Noto Naskh Arabic', serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 4px; letter-spacing: 0.02em; }
+  .btn-add:active { transform: scale(0.97); opacity: 0.9; }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+  .filter-row input[type="date"] { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; color: var(--text); font-family: 'Noto Naskh Arabic', serif; font-size: 0.85rem; outline: none; direction: ltr; cursor: pointer; transition: border-color 0.2s; }
+  .filter-row input[type="date"]:focus { border-color: var(--accent); }
+  .btn-filter { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--muted); font-family: 'Noto Naskh Arabic', serif; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-filter:hover, .btn-filter.active { border-color: var(--accent); color: var(--accent); }
+
+  .section-title { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .section-title span { color: var(--accent); font-weight: 600; }
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+  .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state p { font-size: 0.9rem; }
+
+  .entry-item { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px; animation: slideIn 0.3s ease; transition: border-color 0.2s; position: relative; }
+  .entry-item:hover { border-color: rgba(200,169,110,0.3); }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .entry-main { flex: 1; min-width: 0; }
+  .entry-amount { font-size: 1.25rem; font-weight: 700; color: var(--accent2); line-height: 1.2; }
+  .entry-amount small { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+  .entry-note { font-size: 0.85rem; color: var(--text); margin-top: 5px; line-height: 1.5; word-break: break-word; }
+  .entry-date { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+  .entry-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .btn-delete { background: transparent; border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); font-size: 0.9rem; transition: all 0.2s; }
+  .btn-delete:hover { border-color: var(--danger); color: var(--danger); background: rgba(224,96,96,0.08); }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--success); color: #0a1a12; padding: 12px 24px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; font-family: 'Noto Naskh Arabic', serif; z-index: 999; transition: transform 0.3s ease; white-space: nowrap; box-shadow: 0 4px 20px rgba(93,184,138,0.3); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .btn-clear-all { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; color: var(--muted); font-family: 'Noto Naskh Arabic', serif; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+  .btn-clear-all:hover { border-color: var(--danger); color: var(--danger); }
+
+  .date-group-header { font-size: 0.8rem; color: var(--muted); padding: 8px 4px 6px; border-bottom: 1px solid var(--border); margin-bottom: 10px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .date-group-header:first-child { margin-top: 0; }
+  .date-group-total { color: var(--accent); font-weight: 600; font-size: 0.82rem; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; max-width: 320px; width: 90%; text-align: center; }
+  .modal h3 { color: var(--text); font-size: 1.1rem; margin-bottom: 10px; }
+  .modal p { color: var(--muted); font-size: 0.88rem; margin-bottom: 20px; line-height: 1.6; }
+  .modal-btns { display: flex; gap: 10px; }
+  .modal-btns button { flex: 1; border-radius: 10px; padding: 12px; font-family: 'Noto Naskh Arabic', serif; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; border: none; font-weight: 600; }
+  .btn-confirm-del { background: var(--danger); color: white; }
+  .btn-cancel { background: var(--surface); color: var(--muted); border: 1px solid var(--border) !important; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <span class="logo-icon">💰</span>
+    <h1>تۆمارکردنی خەرجی</h1>
+    <p>خەرجی ڕۆژانەت تۆمار بکە</p>
+  </header>
+  <div class="total-card">
+    <div class="total-label">کۆی گشتی</div>
+    <div class="total-amount" id="totalAmount"><span>IQD</span><span id="totalNum">0</span></div>
+    <div class="total-count" id="totalCount">٠ تۆماری خەرجی</div>
+  </div>
+  <div class="input-card">
+    <h2>➕ زیادکردنی خەرجی نوێ</h2>
+    <div class="field">
+      <label>بڕی پارە (IQD)</label>
+      <input type="number" id="amountInput" placeholder="بۆ نموونە: 5000" min="0">
+    </div>
+    <div class="field">
+      <label>تێبینی (ئارەزوومەندانە)</label>
+      <textarea id="noteInput" placeholder="ئەم خەرجیە بۆ چی بوو؟"></textarea>
+    </div>
+    <div class="field">
+      <label>بەروار</label>
+      <input type="date" id="dateInput">
+    </div>
+    <button class="btn-add" onclick="addEntry()">تۆمار بکە</button>
+  </div>
+  <div class="filter-row">
+    <button class="btn-filter active" id="filterAll" onclick="setFilter('all')">هەموو</button>
+    <button class="btn-filter" id="filterToday" onclick="setFilter('today')">ئەمڕۆ</button>
+    <button class="btn-filter" id="filterMonth" onclick="setFilter('month')">ئەم مانگە</button>
+    <input type="date" id="filterDate" onchange="setFilter('date')" title="بەروار هەڵبژێرە">
+  </div>
+  <div class="section-title">
+    <span id="listLabel">هەموو تۆمارەکان</span>
+    <button class="btn-clear-all" onclick="confirmClearAll()">سڕینەوەی هەموو</button>
+  </div>
+  <div id="entryList"></div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>⚠️ دڵنیایت؟</h3>
+    <p id="modalMsg">ئایا دڵنیایت کە دەتەوێت ئەم تۆمارە بسڕیتەوە؟</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">نەخێر</button>
+      <button class="btn-confirm-del" id="modalConfirmBtn">بەڵێ، بسڕەوە</button>
+    </div>
+  </div>
+</div>
+<script>
+  let entries = JSON.parse(localStorage.getItem('kharzhi_entries') || '[]');
+  let currentFilter = 'all';
+  let pendingAction = null;
+  document.getElementById('dateInput').value = today();
+  renderList();
+  function today() { return new Date().toISOString().split('T')[0]; }
+  function formatDate(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    const days = ['یەکشەممە','دووشەممە','سێشەممە','چوارشەممە','پێنجشەممە','هەینی','شەممە'];
+    const months = ['کانوونی دووەم','شوبات','ئازار','نیسان','ئایار','حوزەیران','تەمووز','ئاب','ئەیلوول','تشرینی یەکەم','تشرینی دووەم','کانوونی یەکەم'];
+    return days[d.getDay()] + '، ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+  function formatNum(n) { return Number(n).toLocaleString('en'); }
+  function save() { localStorage.setItem('kharzhi_entries', JSON.stringify(entries)); }
+  function showToast(msg, color) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color || 'var(--success)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+  function addEntry() {
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    const note = document.getElementById('noteInput').value.trim();
+    const date = document.getElementById('dateInput').value;
+    if (!amount || amount <= 0) { showToast('⚠️ تکایە بڕی پارە بنووسە', '#e06060'); document.getElementById('amountInput').focus(); return; }
+    const entry = { id: Date.now(), amount, note, date: date || today(), time: new Date().toLocaleTimeString('en', {hour:'2-digit', minute:'2-digit'}) };
+    entries.unshift(entry); save();
+    document.getElementById('amountInput').value = '';
+    document.getElementById('noteInput').value = '';
+    document.getElementById('dateInput').value = today();
+    renderList(); showToast('✅ تۆماری خەرجی زیاد کرا!');
+  }
+  function setFilter(f) {
+    if (f === 'date' && !document.getElementById('filterDate').value) return;
+    currentFilter = f;
+    ['filterAll','filterToday','filterMonth'].forEach(id => { document.getElementById(id).classList.remove('active'); });
+    if (f === 'all') document.getElementById('filterAll').classList.add('active');
+    else if (f === 'today') document.getElementById('filterToday').classList.add('active');
+    else if (f === 'month') document.getElementById('filterMonth').classList.add('active');
+    renderList();
+  }
+  function getFiltered() {
+    const t = today(); const thisMonth = t.slice(0, 7);
+    if (currentFilter === 'today') return entries.filter(e => e.date === t);
+    if (currentFilter === 'month') return entries.filter(e => e.date.startsWith(thisMonth));
+    if (currentFilter === 'date') { const fd = document.getElementById('filterDate').value; return entries.filter(e => e.date === fd); }
+    return entries;
+  }
+  function renderList() {
+    const filtered = getFiltered(); const list = document.getElementById('entryList');
+    const total = filtered.reduce((s, e) => s + e.amount, 0);
+    document.getElementById('totalNum').textContent = formatNum(total);
+    document.getElementById('totalCount').textContent = toKurdishNum(filtered.length) + ' تۆماری خەرجی';
+    let label = 'هەموو تۆمارەکان';
+    if (currentFilter === 'today') label = 'خەرجیی ئەمڕۆ';
+    else if (currentFilter === 'month') label = 'خەرجیی ئەم مانگە';
+    else if (currentFilter === 'date') label = 'خەرجیی ' + formatDate(document.getElementById('filterDate').value);
+    document.getElementById('listLabel').textContent = label;
+    if (filtered.length === 0) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>هیچ تۆمارێک نییە</p></div>'; return; }
+    const groups = {}; filtered.forEach(e => { if (!groups[e.date]) groups[e.date] = []; groups[e.date].push(e); });
+    const dates = Object.keys(groups).sort((a,b) => b.localeCompare(a)); let html = '';
+    dates.forEach(date => {
+      const dayEntries = groups[date]; const dayTotal = dayEntries.reduce((s, e) => s + e.amount, 0);
+      html += '<div class="date-group-header"><span>' + formatDate(date) + '</span><span class="date-group-total">IQD ' + formatNum(dayTotal) + '</span></div>';
+      dayEntries.forEach(e => {
+        html += '<div class="entry-item" id="entry-' + e.id + '"><div class="entry-main"><div class="entry-amount">IQD ' + formatNum(e.amount) + '</div>' + (e.note ? '<div class="entry-note">📝 ' + e.note + '</div>' : '') + '<div class="entry-date">🕐 ' + (e.time || '') + '</div></div><div class="entry-actions"><button class="btn-delete" onclick="confirmDelete(' + e.id + ')" title="سڕینەوە">🗑️</button></div></div>';
+      });
+    });
+    list.innerHTML = html;
+  }
+  function confirmDelete(id) {
+    const entry = entries.find(e => e.id === id); if (!entry) return;
+    document.getElementById('modalMsg').textContent = 'ئایا دڵنیایت کە دەتەوێت ئەم تۆمارە بسڕیتەوە؟\nIQD ' + formatNum(entry.amount) + (entry.note ? ' — ' + entry.note : '');
+    pendingAction = () => deleteEntry(id);
+    document.getElementById('modalConfirmBtn').onclick = () => { pendingAction(); closeModal(); };
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+  function deleteEntry(id) { entries = entries.filter(e => e.id !== id); save(); renderList(); showToast('🗑️ تۆمارەکە سڕایەوە', '#e06060'); }
+  function confirmClearAll() {
+    if (entries.length === 0) return;
+    document.getElementById('modalMsg').textContent = 'ئایا دڵنیایت کە دەتەوێت هەموو تۆمارەکان بسڕیتەوە؟ ئەم کارە گەرانەوەی نییە!';
+    pendingAction = () => clearAll();
+    document.getElementById('modalConfirmBtn').onclick = () => { pendingAction(); closeModal(); };
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+  function clearAll() { entries = []; save(); renderList(); showToast('🗑️ هەموو تۆمارەکان سڕایەوە', '#e06060'); }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); pendingAction = null; }
+  document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  document.getElementById('amountInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') addEntry(); });
+  function toKurdishNum(n) { const kr = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩']; return String(n).split('').map(c => kr[c] || c).join(''); }
+</script>
+</body>
+</html>
