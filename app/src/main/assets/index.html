@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تۆمارکردنی خەرجی</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            background-color: #0f0f13;
+            color: #f0ece4;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #c8a96e;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-top: 15px;
+        }
+
+        .form-section {
+            background: #1a1a24;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #2a2a3a;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #c8a96e;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f0f13;
+            border: 1px solid #2a2a3a;
+            border-radius: 10px;
+            color: #f0ece4;
+            font-family: 'Noto Sans Arabic', sans-serif;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #c8a96e;
+        }
+
+        .form-group input::placeholder {
+            color: #555;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #c8a96e, #e8c98e);
+            color: #0f0f13;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            font-family: 'Noto Sans Arabic', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-add:active {
+            transform: scale(0.98);
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px 12px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 10px;
+            color: #888;
+            font-family: 'Noto Sans Arabic', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .filter-btn.active {
+            background: #c8a96e;
+            color: #0f0f13;
+            border-color: #c8a96e;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #1a1a24, #22222e);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #2a2a3a;
+            text-align: center;
+        }
+
+        .summary-label {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .summary-amount {
+            color: #c8a96e;
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        .expense-list {
+            list-style: none;
+        }
+
+        .expense-item {
+            background: #1a1a24;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #2a2a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-name {
+            font-weight: 600;
+            font-size: 1.05em;
+            margin-bottom: 4px;
+        }
+
+        .expense-meta {
+            color: #888;
+            font-size: 0.8em;
+        }
+
+        .expense-amount {
+            color: #c8a96e;
+            font-weight: 700;
+            font-size: 1.2em;
+            margin-left: 15px;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #ff4d4d;
+            font-size: 1.3em;
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-left: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:active {
+            background: rgba(255, 77, 77, 0.15);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #555;
+            padding: 40px 20px;
+            font-size: 1em;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1a1a24;
+            border-radius: 16px;
+            padding: 25px;
+            width: 85%;
+            max-width: 350px;
+            text-align: center;
+            border: 1px solid #2a2a3a;
+        }
+
+        .modal h3 {
+            color: #f0ece4;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .modal p {
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Noto Sans Arabic', sans-serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn.cancel {
+            background: #2a2a3a;
+            color: #f0ece4;
+        }
+
+        .modal-btn.confirm {
+            background: #ff4d4d;
+            color: white;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #c8a96e;
+            color: #0f0f13;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9em;
+            z-index: 2000;
+            transition: transform 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: rgba(200, 169, 110, 0.15);
+            color: #c8a96e;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75em;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📒 تۆمارکردنی خەرجی</h1>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label>ناوی خەرجی</label>
+                <input type="text" id="expenseName" placeholder="بۆ نموونە: نان، بەنزین...">
+            </div>
+            <div class="form-group">
+                <label>بڕی پارە</label>
+                <input type="number" id="expenseAmount" placeholder="٠" min="0" step="any">
+            </div>
+            <div class="form-group">
+                <label>جۆری خەرجی</label>
+                <select id="expenseCategory">
+                    <option value="خۆراک">🍞 خۆراک</option>
+                    <option value="گواستنەوە">🚗 گواستنەوە</option>
+                    <option value="کرێ">🏠 کرێ</option>
+                    <option value="پزیشکی">🏥 پزیشکی</option>
+                    <option value="فێرکاری">📚 فێرکاری</option>
+                    <option value="ڕامیاری">🎮 ڕامیاری</option>
+                    <option value="هیتر">📦 هیتر</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>بەروار</label>
+                <input type="date" id="expenseDate">
+            </div>
+            <button class="btn-add" onclick="addExpense()">+ زیادکردن</button>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="setFilter('all', this)">هەموو</button>
+            <button class="filter-btn" onclick="setFilter('today', this)">ئەمڕۆ</button>
+            <button class="filter-btn" onclick="setFilter('month', this)">ئەم مانگە</button>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-label">کۆی خەرجی</div>
+            <div class="summary-amount" id="totalAmount">٠ دینار</div>
+        </div>
+
+        <ul class="expense-list" id="expenseList"></ul>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h3>سڕینەوە؟</h3>
+            <p>دڵنیایت لە سڕینەوەی ئەم خەرجیە؟</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeModal()">پاشگەزبوونەوە</button>
+                <button class="modal-btn confirm" onclick="confirmDelete()">سڕینەوە</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        let currentFilter = 'all';
+        let deleteIndex = null;
+
+        // Set today's date as default
+        document.getElementById('expenseDate').valueAsDate = new Date();
+
+        // Convert to Kurdish numerals
+        function toKurdishNum(num) {
+            const kurdishDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+            return num.toString().replace(/\d/g, d => kurdishDigits[d]);
+        }
+
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Add expense
+        function addExpense() {
+            const name = document.getElementById('expenseName').value.trim();
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const category = document.getElementById('expenseCategory').value;
+            const date = document.getElementById('expenseDate').value;
+
+            if (!name) {
+                showToast('تکایە ناوی خەرجی بنووسە');
+                return;
+            }
+            if (!amount || amount <= 0) {
+                showToast('تکایە بڕی پارە بنووسە');
+                return;
+            }
+            if (!date) {
+                showToast('تکایە بەروار دیاری بکە');
+                return;
+            }
+
+            expenses.push({ name, amount, category, date });
+            saveAndRender();
+
+            // Clear form
+            document.getElementById('expenseName').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseDate').valueAsDate = new Date();
+
+            showToast('خەرجی زیاد کرا ✓');
+        }
+
+        // Set filter
+        function setFilter(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderExpenses();
+        }
+
+        // Get filtered expenses
+        function getFilteredExpenses() {
+            const today = new Date().toISOString().split('T')[0];
+            const currentMonth = today.substring(0, 7);
+
+            switch (currentFilter) {
+                case 'today':
+                    return expenses.filter(e => e.date === today);
+                case 'month':
+                    return expenses.filter(e => e.date && e.date.substring(0, 7) === currentMonth);
+                default:
+                    return expenses;
+            }
+        }
+
+        // Render expenses
+        function renderExpenses() {
+            const list = document.getElementById('expenseList');
+            const filtered = getFilteredExpenses();
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="empty-state">هیچ خەرجییەک نییە 📭</div>';
+                document.getElementById('totalAmount').textContent = '٠ دینار';
+                return;
+            }
+
+            // Sort by date descending
+            const sorted = [...filtered].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+            let total = 0;
+            list.innerHTML = sorted.map((expense, i) => {
+                const originalIndex = expenses.indexOf(expense);
+                total += expense.amount;
+                const kurdishDate = expense.date ? toKurdishNum(expense.date.split('-').reverse().join('/')) : '';
+                return `
+                    <li class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-name">${escapeHtml(expense.name)}</div>
+                            <div class="expense-meta">${kurdishDate}</div>
+                            <span class="category-badge">${escapeHtml(expense.category)}</span>
+                        </div>
+                        <div class="expense-amount">${toKurdishNum(formatNumber(expense.amount))} د.ع</div>
+                        <button class="btn-delete" onclick="openDeleteModal(${originalIndex})">🗑</button>
+                    </li>
+                `;
+            }).join('');
+
+            document.getElementById('totalAmount').textContent = toKurdishNum(formatNumber(total)) + ' دینار';
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Delete modal
+        function openDeleteModal(index) {
+            deleteIndex = index;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            deleteIndex = null;
+        }
+
+        function confirmDelete() {
+            if (deleteIndex !== null) {
+                expenses.splice(deleteIndex, 1);
+                saveAndRender();
+                showToast('خەرجی سڕایەوە');
+            }
+            closeModal();
+        }
+
+        // Save to localStorage and render
+        function saveAndRender() {
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            renderExpenses();
+        }
+
+        // Initial render
+        renderExpenses();
+    </script>
+</body>
+</html>
